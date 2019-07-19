@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Spotify</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+</head>
+<body>
+<form id="example-basic">
+    Spotify Username:<input id="spotify-username" type="text" name="username">
+    <br>
+    Playlist Name:<input id="playlist-name" type="text" name="playlistName">
+    <br>
+    <input type="submit" value="Submit">
+</form>
+
+<script>
+    $(document).ready(function () {
+        $('#example-basic').on('submit', function (e) {
+            e.preventDefault();
+
+            var username = $("#spotify-username").val();
+            var spotifyURL = `http://localhost:6584/users/${username}/playlists`;
+
+            var playlistName = $("#playlist-name").val();
+
+            $.post(spotifyURL, {name: playlistName})
+                .done(function (data) {
+                    alert("Playlist created: " + data);
+                });
+        });
+    });
+</script>
+</body>
+</html>
