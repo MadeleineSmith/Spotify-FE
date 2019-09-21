@@ -2,10 +2,10 @@
   <div class="hello">
     <h1>CREATE KILLER PLAYLIST</h1>
 
-    <form id="example-basic">
-      <input id="playlist-name" type="text" name="playlistName" placeholder="Playlist name">
+    <form id="example-basic" @submit.prevent="formSubmitted($data)">
+      <input type="text" placeholder="Playlist name" v-model="formFields.name">
 
-      <select name="yearpicker" id="yearpicker">
+      <select name="yearpicker" id="yearpicker" v-model="year">
         <option v-for="n in getNumbers()" :value="n">{{ n }}</option>
       </select>
 
@@ -17,9 +17,24 @@
 <script>
 export default {
   name: 'CreateKillerPlaylist',
+        data() {
+           return {
+               accessToken: '',
+               formFields: {},
+               year: 0,
+           }
+        },
     created() {
-        // what happens if for some reason this route param doesn't exist?
-        this.$cookies.set("access_token", this.$route.params.accessToken)
+        // TODO - what happens if for some reason this route param doesn't exist?
+        var accessToken = this.$route.params.accessToken
+
+        this.accessToken = accessToken
+
+        this.$http.defaults.headers.common['Authorization'] = accessToken
+
+        // TODO - set base URL as env var
+        this.$http.defaults.baseURL = 'http://localhost:6584'
+
     },
     methods: {
       getNumbers() {
@@ -31,7 +46,36 @@ export default {
           const finishingYear = currentDate.getFullYear()
 
           return new Array(finishingYear-startingYear).fill(startingYear).map((n,i)=>n+i);
-      }
+      },
+        formSubmitted() {
+            var playlistName = this.formFields.name
+            var scrapeOfficialChartsURL = `/charts/${this.year}`
+
+            this.$http.post('/user/playlists', this.formFields)
+                .then(response => {
+                    var playlistID = response.data.id
+
+                    return this.$http.get(scrapeOfficialChartsURL)
+                        .then(scrapedData => {
+                            var spotifySearchURL = `/search`
+
+                            return this.$http.post(spotifySearchURL, scrapedData.data)
+                                .then(completedData => {
+                                    var addToPlaylistURL = `/playlists/${playlistID}/tracks`
+
+                                    return this.$http.post(addToPlaylistURL, completedData.data).then(
+                                        () => {
+                                            alert(`Playlist: ${playlistName} added to user`)
+                                        }
+                                    )
+
+                                })
+                        })
+                })
+
+            // reset values of form fields
+            this.formFields = {}
+        }
     }
 }
 
@@ -43,9 +87,3 @@ a {
   color: #42b983;
 }
 </style>
-
-
-// when hit this component:
-// get the access token from the URL
-// set it in a cookie
-// use the cookie when making the requests
