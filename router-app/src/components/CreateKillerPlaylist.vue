@@ -11,17 +11,29 @@
 
       <input type="submit" value="Submit">
     </form>
+
+    <font-awesome-icon icon="spinner" spin v-show="playlistCreationInProgress"></font-awesome-icon>
+
   </div>
 </template>
 
 <script>
-export default {
+    import Vue from 'vue'
+
+    import {library} from '@fortawesome/fontawesome-svg-core'
+    import {faSpinner} from '@fortawesome/free-solid-svg-icons'
+    import {FontAwesomeIcon} from '@fortawesome/vue-fontawesome'
+    library.add(faSpinner)
+    Vue.component('font-awesome-icon', FontAwesomeIcon)
+
+    export default {
   name: 'CreateKillerPlaylist',
         data() {
            return {
                accessToken: '',
                formFields: {},
                year: 0,
+               playlistCreationInProgress: false,
            }
         },
     created() {
@@ -48,7 +60,7 @@ export default {
           return new Array(finishingYear-startingYear).fill(startingYear).map((n,i)=>n+i);
       },
         formSubmitted() {
-            var playlistName = this.formFields.name
+            this.playlistCreationInProgress = true
             var scrapeOfficialChartsURL = `/charts/${this.year}`
 
             this.$http.post('/user/playlists', this.formFields)
@@ -65,16 +77,14 @@ export default {
 
                                     return this.$http.post(addToPlaylistURL, completedData.data).then(
                                         () => {
-                                            alert(`Playlist: ${playlistName} added to user`)
+                                            alert(`Playlist: ${this.formFields.name} added to user`)
+                                            this.playlistCreationInProgress = false
+                                            this.formFields = {}
                                         }
                                     )
-
                                 })
                         })
                 })
-
-            // reset values of form fields
-            this.formFields = {}
         }
     }
 }
