@@ -2,17 +2,16 @@
   <div class="hello">
     <h1>CREATE KILLER PLAYLIST</h1>
 
-    <form id="example-basic" @submit.prevent="formSubmitted($data)">
-      <input type="text" placeholder="Playlist name" v-model="formFields.name">
+    <form id="example-basic" @submit.prevent="formSubmitted($data)" >
+      <input type="text" placeholder="Playlist name" v-model="formFields.name" :disabled="playlistCreationInProgress">
 
-      <select name="yearpicker" id="yearpicker" v-model="year">
+      <select name="yearpicker" id="yearpicker" v-model="year" :disabled="playlistCreationInProgress">
         <option v-for="n in getNumbers()" :value="n">{{ n }}</option>
       </select>
 
-      <input type="submit" value="Submit">
+      <input type="submit" value="Submit" :disabled="playlistCreationInProgress">
+      <font-awesome-icon icon="spinner" spin v-show="playlistCreationInProgress"></font-awesome-icon>
     </form>
-
-    <font-awesome-icon icon="spinner" spin v-show="playlistCreationInProgress"></font-awesome-icon>
 
   </div>
 </template>
