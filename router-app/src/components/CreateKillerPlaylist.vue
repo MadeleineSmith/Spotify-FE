@@ -49,14 +49,12 @@
     },
     methods: {
       getNumbers() {
-          // TODO - change both to be more accurate? Or maybe this is a BE jobby?
-          // currently returns 1953 -> present year - 1
-          const startingYear = 1953
+          const startingYear = 1952;
 
           var currentDate = new Date();
           const finishingYear = currentDate.getFullYear()
 
-          return new Array(finishingYear-startingYear).fill(startingYear).map((n,i)=>n+i);
+          return new Array(finishingYear-startingYear + 1).fill(finishingYear).map((n,i)=>n-i);
       },
         formSubmitted() {
             this.playlistCreationInProgress = true
