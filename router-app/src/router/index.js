@@ -24,5 +24,3 @@ export default new Router({
     }
   ]
 })
-
-// TODO MS 08/09 - Translate pre-existing code into component + figure out how authentication works in Vue

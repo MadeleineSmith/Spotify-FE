@@ -43,9 +43,6 @@
 
         this.$http.defaults.headers.common['Authorization'] = accessToken
 
-        // TODO - set base URL as env var
-        this.$http.defaults.baseURL = 'http://localhost:6584'
-
     },
     methods: {
       getNumbers() {

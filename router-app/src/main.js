@@ -9,6 +9,7 @@ import axios from 'axios'
 Vue.config.productionTip = false
 
 Vue.prototype.$http = axios
+Vue.prototype.$http.defaults.baseURL = process.env.BASE_URL
 
 /* eslint-disable no-new */
 new Vue({
