@@ -1,12 +1,17 @@
 <template>
   <div class="hello">
-    <a href="http://localhost:6584/login" class="btn btn-primary">Log in with Spotify</a>
+    <a :href="`${baseURL}/login`" class="btn btn-primary">Log in with Spotify</a>
   </div>
 </template>
 
 <script>
 export default {
   name: 'LoginWithSpotify',
+    data () {
+      return {
+          baseURL: process.env.BASE_URL,
+      }
+    }
 }
 </script>
 

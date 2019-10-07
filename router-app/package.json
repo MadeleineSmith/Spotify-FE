@@ -7,7 +7,9 @@
   "scripts": {
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
     "start": "npm run dev",
-    "build": "node build/build.js"
+    "build-staging": "node build/build.js staging",
+    "deploy-staging-without-build": "node node_modules/s3-deploy/bin/s3-deploy './dist/**' --cwd './dist/' --region eu-west-1 --bucket spotify-staging --profile spotify",
+    "release-staging": "npm run build-staging && npm run deploy-staging-without-build"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.24",
@@ -44,6 +46,7 @@
     "postcss-loader": "^2.0.8",
     "postcss-url": "^7.2.1",
     "rimraf": "^2.6.0",
+    "s3-deploy": "^1.4.0",
     "semver": "^5.3.0",
     "shelljs": "^0.7.6",
     "uglifyjs-webpack-plugin": "^1.1.1",
