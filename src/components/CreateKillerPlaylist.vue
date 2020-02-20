@@ -3,12 +3,14 @@
     <h1>CREATE KILLER PLAYLIST</h1>
 
     <form id="example-basic" @submit.prevent="formSubmitted($data)" >
-      <input type="text" placeholder="Playlist name" v-model="formFields.name" :disabled="playlistCreationInProgress">
+      <!-- <input type="text" placeholder="Playlist name" v-model="formFields.name" :disabled="playlistCreationInProgress"> -->
+      <label for="yearpicker">Select year:</label>
 
-      <select name="yearpicker" id="yearpicker" v-model="year" :disabled="playlistCreationInProgress">
+      <select name="yearpicker" id="yearpicker" v-model="formFields.year" :disabled="playlistCreationInProgress">
         <option v-for="n in getNumbers()" :value="n">{{ n }}</option>
       </select>
 
+      <br>
       <input type="submit" value="Submit" :disabled="playlistCreationInProgress">
       <font-awesome-icon icon="spinner" spin v-show="playlistCreationInProgress"></font-awesome-icon>
     </form>
@@ -31,7 +33,7 @@
            return {
                accessToken: '',
                formFields: {},
-               year: 0,
+               year: "0",
                playlistCreationInProgress: false,
            }
         },
@@ -55,11 +57,13 @@
       },
         formSubmitted() {
             this.playlistCreationInProgress = true
-            var scrapeOfficialChartsURL = `/charts/${this.year}`
-
+            
             this.$http.post('/user/playlists', this.formFields)
                 .then(response => {
                     var playlistID = response.data.id
+                    var dateString = response.data.date
+                  
+                    var scrapeOfficialChartsURL = `/charts/${dateString}`
 
                     return this.$http.get(scrapeOfficialChartsURL)
                         .then(scrapedData => {
@@ -71,7 +75,7 @@
 
                                     return this.$http.post(addToPlaylistURL, completedData.data).then(
                                         () => {
-                                            alert(`Playlist: ${this.formFields.name} added to user`)
+                                            alert(`Playlist of ${dateString} added to user`)
                                             this.playlistCreationInProgress = false
                                             this.formFields = {}
                                         }
