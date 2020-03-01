@@ -2,8 +2,8 @@
   <div class="hello">
     <h1>Create your playlist</h1>
 
-    <form id="specific-date-form" @submit.prevent="formSubmitted($data)" >
-      <label>Select a date:</label>
+    <form id="specific-date-form" @submit.prevent="specificDateformSubmitted()" >
+      <label>Create a chart on:</label>
       
       <input type="date" id="dateField"  v-model="formFields.date" min="1952-11-14" :max="maximumDate()">
     
@@ -13,13 +13,11 @@
 
     <hr>
 
-    <form id="example-basic" @submit.prevent="formSubmitted($data)" >
+    <form id="example-basic" @submit.prevent="minYearFormSubmitted()" >
     
-      <label for="yearpicker">Or randomise on a year:</label>
+      <label for="yearpicker">Randomise a chart since:</label>
 
-      <select name="yearpicker" id="yearpicker" v-model="formFields.year" :disabled="playlistCreationInProgress">
-        <option v-for="n in getNumbers()" :value="n">{{ n }}</option>
-      </select>
+      <input type="number" min=1952 :max="maximumNumYears()" v-model.number="formFields.minYear">
 
       <br>
       <input type="submit" value="Submit" :disabled="playlistCreationInProgress">
@@ -38,13 +36,17 @@
     library.add(faSpinner)
     Vue.component('font-awesome-icon', FontAwesomeIcon)
 
+    const formDefaults = {
+                 "date": "2010-01-01",
+                 "minYear": 2010
+               }
+
     export default {
   name: 'CreateKillerPlaylist',
         data() {
            return {
                accessToken: '',
-               formFields: {},
-               year: "0",
+               formFields: Object.assign({}, formDefaults),
                playlistCreationInProgress: false,
            }
         },
@@ -74,13 +76,19 @@
 
         return today
     },
-      getNumbers() {
-          const startingYear = 1952;
-
+      maximumNumYears() {
           var currentDate = new Date();
-          const finishingYear = currentDate.getFullYear()
+          const currentYear = currentDate.getFullYear()
 
-          return new Array(finishingYear-startingYear + 1).fill(finishingYear).map((n,i)=>n-i);
+          return currentYear
+      },
+      specificDateformSubmitted() {
+        delete this.formFields.minYear
+        this.formSubmitted()
+      },
+      minYearFormSubmitted() {
+        delete this.formFields.date
+        this.formSubmitted()
       },
         formSubmitted() {
             this.playlistCreationInProgress = true
@@ -104,7 +112,7 @@
                                         () => {
                                             alert(`Playlist of ${dateString} added to user`)
                                             this.playlistCreationInProgress = false
-                                            this.formFields = {}
+                                            this.formFields = Object.assign({}, formDefaults)
                                         }
                                     )
                                 })
