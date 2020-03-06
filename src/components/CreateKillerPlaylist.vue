@@ -18,7 +18,7 @@
           >
             <template v-slot:activator="{ on }">
               <v-text-field
-                v-model="formFields.date"
+                v-model="dateFormatted"
                 label="Specific date"
                 prepend-icon="event"
                 readonly
@@ -60,29 +60,30 @@
 </template>
 
 <script>
-import Vue from 'vue';
+import Vue from "vue";
 
-import { library } from '@fortawesome/fontawesome-svg-core';
-import { faSpinner } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { library } from "@fortawesome/fontawesome-svg-core";
+import { faSpinner } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
 library.add(faSpinner);
-Vue.component('font-awesome-icon', FontAwesomeIcon);
+Vue.component("font-awesome-icon", FontAwesomeIcon);
 
+// TODO - consider splitting these out
 const formDefaults = {
-  date: '2010-03-05',
-  minYear: 2010,
+  date: "2010-03-05",
+  minYear: 2010
 };
 
 export default {
-  name: 'CreateKillerPlaylist',
-  data() {
+  name: "CreateKillerPlaylist",
+  data(vm) {
     return {
-      accessToken: '',
+      accessToken: "",
       formFields: { ...formDefaults },
       playlistCreationInProgress: false,
-      playingDate: new Date().toISOString().substring(0, 10),
       menu: false,
+      dateFormatted: vm.formatDate(formDefaults.date)
     };
   },
   created() {
@@ -93,7 +94,21 @@ export default {
 
     this.$http.defaults.headers.common.Authorization = accessToken;
   },
+  watch: {
+    "formFields.date": {
+      handler(after, before) {
+        this.dateFormatted = this.formatDate(this.formFields.date);
+      },
+      deep: true
+    }
+  },
   methods: {
+    formatDate(date) {
+      if (!date) return null;
+
+      const [year, month, day] = date.split("-");
+      return `${day}/${month}/${year}`;
+    },
     maximumDate() {
       let today = new Date();
       let dd = today.getDate();
@@ -127,18 +142,18 @@ export default {
     formSubmitted() {
       this.playlistCreationInProgress = true;
 
-      this.$http.post('/user/playlists', this.formFields).then((response) => {
+      this.$http.post("/user/playlists", this.formFields).then(response => {
         const playlistID = response.data.id;
         const dateString = response.data.date;
 
         const scrapeOfficialChartsURL = `/charts/${dateString}`;
 
-        return this.$http.get(scrapeOfficialChartsURL).then((scrapedData) => {
-          const spotifySearchURL = '/search';
+        return this.$http.get(scrapeOfficialChartsURL).then(scrapedData => {
+          const spotifySearchURL = "/search";
 
           return this.$http
             .post(spotifySearchURL, scrapedData.data)
-            .then((completedData) => {
+            .then(completedData => {
               const addToPlaylistURL = `/playlists/${playlistID}/tracks`;
 
               return this.$http
@@ -151,8 +166,8 @@ export default {
             });
         });
       });
-    },
-  },
+    }
+  }
 };
 </script>
 
