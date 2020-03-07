@@ -1,9 +1,15 @@
 <template>
   <div class="hello">
     <h1>Create your playlist</h1>
+
+    <p>
+      Explore chart history here:
+      <a href="https://www.officialcharts.com/charts/" target="_blank">Official Charts</a>
+    </p>
+
     <v-row>
       <v-col xs12 sm6 md4>
-        <form id="specific-date-form" @submit.prevent="specificDateformSubmitted()">
+        <form id="specific-date-form" @submit.prevent="specificDateFormSubmitted()">
           <label>Create a chart on:</label>
 
           <v-menu
@@ -69,21 +75,21 @@ import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 library.add(faSpinner);
 Vue.component("font-awesome-icon", FontAwesomeIcon);
 
-// TODO - consider splitting these out
-const formDefaults = {
-  date: "2010-03-05",
-  minYear: 2010
-};
+const defaultDate = "2010-03-05";
+const defaultMinYear = 2010;
 
 export default {
   name: "CreateKillerPlaylist",
   data(vm) {
     return {
       accessToken: "",
-      formFields: { ...formDefaults },
+      formFields: {
+        date: defaultDate,
+        minYear: defaultMinYear
+      },
       playlistCreationInProgress: false,
       menu: false,
-      dateFormatted: vm.formatDate(formDefaults.date)
+      dateFormatted: vm.formatDate(defaultDate)
     };
   },
   created() {
@@ -131,18 +137,24 @@ export default {
 
       return currentYear;
     },
-    specificDateformSubmitted() {
-      delete this.formFields.minYear;
-      this.formSubmitted();
+    specificDateFormSubmitted() {
+      const json = {
+        date: this.formFields.date
+      };
+
+      this.formSubmitted(json);
     },
     minYearFormSubmitted() {
-      delete this.formFields.date;
-      this.formSubmitted();
+      const json = {
+        minYear: this.formFields.minYear
+      };
+
+      this.formSubmitted(json);
     },
-    formSubmitted() {
+    formSubmitted(json) {
       this.playlistCreationInProgress = true;
 
-      this.$http.post("/user/playlists", this.formFields).then(response => {
+      this.$http.post("/user/playlists", json).then(response => {
         const playlistID = response.data.id;
         const dateString = response.data.date;
 
@@ -161,7 +173,9 @@ export default {
                 .then(() => {
                   alert(`Playlist of ${dateString} added to user`);
                   this.playlistCreationInProgress = false;
-                  this.formFields = { ...formDefaults };
+
+                  this.formFields.date = defaultDate;
+                  this.formFields.minYear = defaultMinYear;
                 });
             });
         });
