@@ -12,7 +12,7 @@
 
     <v-row>
       <v-col xs12 sm6 md4>
-        <form id="specific-date-form" @submit.prevent="specificDateFormSubmitted()">
+        <v-form id="specific-date-form" @submit.prevent="specificDateFormSubmitted()">
           <label>Create a chart on:</label>
 
           <v-menu
@@ -43,13 +43,13 @@
             ></v-date-picker>
           </v-menu>
 
-          <input type="submit" value="Submit" :disabled="playlistCreationInProgress" />
+          <v-btn class="mr-4" type="submit" :disabled="playlistCreationInProgress">submit</v-btn>
           <font-awesome-icon icon="spinner" spin v-show="playlistCreationInProgress"></font-awesome-icon>
-        </form>
+        </v-form>
       </v-col>
 
       <v-col xs12 sm6 md4>
-        <form id="example-basic" @submit.prevent="minYearFormSubmitted()">
+        <v-form id="example-basic" @submit.prevent="minYearFormSubmitted()">
           <label for="yearpicker">Randomise a chart since:</label>
           <v-flex xs10>
             <v-menu
@@ -64,7 +64,13 @@
               min-width="290px"
             >
               <template v-slot:activator="{ on }">
-                <v-text-field v-model="minYear" label="Year" prepend-icon="event" readonly v-on="on"></v-text-field>
+                <v-text-field
+                  v-model="minYear"
+                  label="Year"
+                  prepend-icon="event"
+                  readonly
+                  v-on="on"
+                ></v-text-field>
               </template>
 
               <v-date-picker
@@ -79,9 +85,9 @@
             </v-menu>
           </v-flex>
 
-          <input type="submit" value="Submit" :disabled="playlistCreationInProgress" />
+          <v-btn class="mr-4" type="submit" :disabled="playlistCreationInProgress">submit</v-btn>
           <font-awesome-icon icon="spinner" spin v-show="playlistCreationInProgress"></font-awesome-icon>
-        </form>
+        </v-form>
       </v-col>
     </v-row>
   </div>
@@ -106,7 +112,7 @@ export default {
     return {
       accessToken: "",
       formFields: {
-        date: defaultDate,
+        date: defaultDate
       },
       playlistCreationInProgress: false,
       menu: false,
@@ -123,7 +129,7 @@ export default {
 
     this.$http.defaults.headers.common.Authorization = accessToken;
 
-    this.minYear = defaultMinYear
+    this.minYear = defaultMinYear;
   },
   watch: {
     "formFields.date": {
@@ -188,7 +194,7 @@ export default {
       const minYear = parseInt(this.minYear);
 
       const json = {
-        minYear: minYear
+        minYear
       };
 
       this.formSubmitted(json);
@@ -217,7 +223,7 @@ export default {
                   this.playlistCreationInProgress = false;
 
                   this.formFields.date = defaultDate;
-                  this.formFields.minYear = defaultMinYear;
+                  this.minYear = defaultMinYear;
                 });
             });
         });
