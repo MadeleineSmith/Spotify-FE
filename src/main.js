@@ -5,6 +5,7 @@ import axios from 'axios';
 import Vuetify from 'vuetify';
 import App from './App';
 import router from './router';
+import store from './store/index';
 
 Vue.config.productionTip = false;
 
@@ -21,5 +22,6 @@ new Vue({
   vuetify: new Vuetify(),
   axios,
   components: { App },
+  store,
   template: '<App/>',
 });
