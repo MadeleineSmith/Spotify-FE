@@ -1,8 +1,8 @@
 <template>
   <div class="hello">
-    <h1>Create your playlist</h1>
+    <h1 class="white--text">Create your playlist</h1>
 
-    <p>
+    <p class="white--text">
       Explore chart history here:
       <a
         href="https://www.officialcharts.com/charts/"
@@ -10,9 +10,10 @@
       >Official Charts</a>
     </p>
 
-    <v-row>
-      <v-col xs12 sm6 md4>
+    <v-row justify="center">
+      <v-col lg="3">
         <v-form id="specific-date-form" @submit.prevent="specificDateFormSubmitted()">
+          <v-card>
           <label>Create a chart on:</label>
 
           <v-menu
@@ -43,50 +44,45 @@
             ></v-date-picker>
           </v-menu>
 
-          <v-btn class="mr-4" type="submit" :disabled="playlistCreationInProgress">submit</v-btn>
+          <v-btn class="mr-4" type="submit" :disabled="playlistCreationInProgress" color="primary">submit</v-btn>
           <font-awesome-icon icon="spinner" spin v-show="playlistCreationInProgress"></font-awesome-icon>
+          </v-card>
         </v-form>
       </v-col>
 
-      <v-col xs12 sm6 md4>
+      <v-col lg="3">
         <v-form id="example-basic" @submit.prevent="minYearFormSubmitted()">
+          <v-card>
           <label for="yearpicker">Randomise a chart since:</label>
-          <v-flex xs10>
-            <v-menu
-              ref="menu2"
-              :close-on-content-click="true"
-              v-model="menu2"
-              :nudge-right="40"
-              lazy
-              transition="scale-transition"
-              offset-y
-              full-width
-              min-width="290px"
-            >
-              <template v-slot:activator="{ on }">
-                <v-text-field
-                  v-model="minYear"
-                  label="Year"
-                  prepend-icon="event"
-                  readonly
-                  v-on="on"
-                ></v-text-field>
-              </template>
+          <v-menu
+            ref="menu2"
+            :close-on-content-click="true"
+            v-model="menu2"
+            :nudge-right="40"
+            lazy
+            transition="scale-transition"
+            offset-y
+            full-width
+            min-width="290px"
+          >
+            <template v-slot:activator="{ on }">
+              <v-text-field v-model="minYear" label="Year" prepend-icon="event" readonly v-on="on"></v-text-field>
+            </template>
 
-              <v-date-picker
-                reactive
-                show-current
-                ref="picker"
-                v-model="minYear"
-                min="1952-NaN-NaN"
-                :max="maximumNumYears()"
-                no-title
-              ></v-date-picker>
-            </v-menu>
-          </v-flex>
+            <v-date-picker
+              reactive
+              show-current
+              ref="picker"
+              v-model="minYear"
+              min="1952-NaN-NaN"
+              :max="maximumNumYears()"
+              no-title
+            ></v-date-picker>
+          </v-menu>
 
-          <v-btn class="mr-4" type="submit" :disabled="playlistCreationInProgress">submit</v-btn>
+          <v-btn class="mr-4" type="submit" :disabled="playlistCreationInProgress"  color="primary">submit</v-btn>
           <font-awesome-icon icon="spinner" spin v-show="playlistCreationInProgress"></font-awesome-icon>
+          </v-card>
         </v-form>
       </v-col>
     </v-row>

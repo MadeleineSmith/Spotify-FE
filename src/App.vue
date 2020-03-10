@@ -23,4 +23,10 @@ export default {
   color: #2c3e50;
   margin-top: 60px;
 }
+
+#app {
+  background-image: url("~@/assets/spotify-theme-music-bkg-dark.png");
+  background-size: 100%;
+  margin: 0;
+}
 </style>
