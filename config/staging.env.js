@@ -4,5 +4,5 @@ const prodEnv = require('./prod.env')
 
 module.exports = merge(prodEnv, {
   NODE_ENV: '"staging"',
-  BASE_URL: '"https://spotify-playlist-generator-be.herokuapp.com"'
+  BASE_URL: '"https://spotify-be-stage.herokuapp.com"'
 })
