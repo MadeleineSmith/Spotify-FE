@@ -1,12 +1,12 @@
-import Vue from 'vue'
-import Router from 'vue-router'
-import LoginWithSpotify from '@/components/LoginWithSpotify'
-import CreateKillerPlaylist from '@/components/CreateKillerPlaylist'
-import VueCookies from 'vue-cookies'
+import Vue from 'vue';
+import Router from 'vue-router';
+import LoginWithSpotify from '@/components/LoginWithSpotify';
+import CreateKillerPlaylist from '@/components/CreateKillerPlaylist';
+import VueCookies from 'vue-cookies';
 
-Vue.use(Router)
+Vue.use(Router);
 
-Vue.use(VueCookies)
+Vue.use(VueCookies);
 
 
 export default new Router({
@@ -15,12 +15,12 @@ export default new Router({
     {
       path: '/',
       name: 'LoginWithSpotify',
-      component: LoginWithSpotify
+      component: LoginWithSpotify,
     },
     {
-      path: '/createKillerPlaylist/:accessToken',
+      path: '/createPlaylist/:accessToken',
       name: 'CreateKillerPlaylist',
-      component: CreateKillerPlaylist
-    }
-  ]
-})
+      component: CreateKillerPlaylist,
+    },
+  ],
+});
