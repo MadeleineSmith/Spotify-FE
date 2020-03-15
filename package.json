@@ -8,8 +8,11 @@
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
     "start": "npm run dev",
     "build-staging": "node build/build.js staging",
+    "build-production": "node build/build.js production",
     "deploy-staging-without-build": "node node_modules/s3-deploy/bin/s3-deploy './dist/**' --cwd './dist/' --region eu-west-1 --bucket spotify-staging --profile spotify",
-    "release-staging": "npm run build-staging && npm run deploy-staging-without-build"
+    "release-staging": "npm run build-staging && npm run deploy-staging-without-build",
+    "deploy-production-without-build": "node node_modules/s3-deploy/bin/s3-deploy './dist/**' --cwd './dist/' --region eu-west-1 --bucket spotify-production --profile spotify",
+    "release-production": "npm run build-production && npm run deploy-production-without-build"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.24",
