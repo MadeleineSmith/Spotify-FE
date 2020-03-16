@@ -10,42 +10,52 @@
       >Official Charts</a>
     </p>
 
+    <v-snackbar v-model="showSnackbar" :timeout="timeout" top="top">
+      <a :href="snackbarHref" target="_blank" @click="showSnackbar = false">Open created playlist</a>
+      <v-btn color="blue" @click="showSnackbar = false">Close</v-btn>
+    </v-snackbar>
+
     <v-row justify="center">
       <v-col lg="3">
         <v-form id="specific-date-form" @submit.prevent="specificDateFormSubmitted()">
           <v-card>
-          <label>Create a chart on:</label>
+            <label>Create a chart on:</label>
 
-          <v-menu
-            v-model="menu"
-            :close-on-content-click="false"
-            :nudge-right="40"
-            lazy
-            transition="scale-transition"
-            offset-y
-            full-width
-            min-width="290px"
-          >
-            <template v-slot:activator="{ on }">
-              <v-text-field
-                v-model="dateFormatted"
-                label="Specific date"
-                prepend-icon="event"
-                readonly
-                v-on="on"
-              ></v-text-field>
-            </template>
+            <v-menu
+              v-model="menu"
+              :close-on-content-click="false"
+              :nudge-right="40"
+              lazy
+              transition="scale-transition"
+              offset-y
+              full-width
+              min-width="290px"
+            >
+              <template v-slot:activator="{ on }">
+                <v-text-field
+                  v-model="dateFormatted"
+                  label="Specific date"
+                  prepend-icon="event"
+                  readonly
+                  v-on="on"
+                ></v-text-field>
+              </template>
 
-            <v-date-picker
-              v-model="formFields.date"
-              @input="menu = false"
-              min="1952-11-14"
-              :max="maximumDate()"
-            ></v-date-picker>
-          </v-menu>
+              <v-date-picker
+                v-model="formFields.date"
+                @input="menu = false"
+                min="1952-11-14"
+                :max="maximumDate()"
+              ></v-date-picker>
+            </v-menu>
 
-          <v-btn class="mr-4" type="submit" :disabled="playlistCreationInProgress" color="primary">submit</v-btn>
-          <font-awesome-icon icon="spinner" spin v-show="playlistCreationInProgress"></font-awesome-icon>
+            <v-btn
+              class="mr-4"
+              type="submit"
+              :disabled="playlistCreationInProgress"
+              color="primary"
+            >submit</v-btn>
+            <font-awesome-icon icon="spinner" spin v-show="playlistCreationInProgress"></font-awesome-icon>
           </v-card>
         </v-form>
       </v-col>
@@ -53,35 +63,46 @@
       <v-col lg="3">
         <v-form id="example-basic" @submit.prevent="minYearFormSubmitted()">
           <v-card>
-          <label for="yearpicker">Randomise a chart since:</label>
-          <v-menu
-            ref="menu2"
-            :close-on-content-click="true"
-            v-model="menu2"
-            :nudge-right="40"
-            lazy
-            transition="scale-transition"
-            offset-y
-            full-width
-            min-width="290px"
-          >
-            <template v-slot:activator="{ on }">
-              <v-text-field v-model="minYear" label="Year" prepend-icon="event" readonly v-on="on"></v-text-field>
-            </template>
+            <label for="yearpicker">Randomise a chart since:</label>
+            <v-menu
+              ref="menu2"
+              :close-on-content-click="true"
+              v-model="menu2"
+              :nudge-right="40"
+              lazy
+              transition="scale-transition"
+              offset-y
+              full-width
+              min-width="290px"
+            >
+              <template v-slot:activator="{ on }">
+                <v-text-field
+                  v-model="minYear"
+                  label="Year"
+                  prepend-icon="event"
+                  readonly
+                  v-on="on"
+                ></v-text-field>
+              </template>
 
-            <v-date-picker
-              reactive
-              show-current
-              ref="picker"
-              v-model="minYear"
-              min="1952-NaN-NaN"
-              :max="maximumNumYears()"
-              no-title
-            ></v-date-picker>
-          </v-menu>
+              <v-date-picker
+                reactive
+                show-current
+                ref="picker"
+                v-model="minYear"
+                min="1952-NaN-NaN"
+                :max="maximumNumYears()"
+                no-title
+              ></v-date-picker>
+            </v-menu>
 
-          <v-btn class="mr-4" type="submit" :disabled="playlistCreationInProgress"  color="primary">submit</v-btn>
-          <font-awesome-icon icon="spinner" spin v-show="playlistCreationInProgress"></font-awesome-icon>
+            <v-btn
+              class="mr-4"
+              type="submit"
+              :disabled="playlistCreationInProgress"
+              color="primary"
+            >submit</v-btn>
+            <font-awesome-icon icon="spinner" spin v-show="playlistCreationInProgress"></font-awesome-icon>
           </v-card>
         </v-form>
       </v-col>
@@ -114,7 +135,9 @@ export default {
       menu: false,
       dateFormatted: vm.formatDate(defaultDate),
       menu2: false,
-      modal: false
+      timeout: 0,
+      showSnackbar: false,
+      snackbarHref: ""
     };
   },
   created() {
@@ -197,6 +220,7 @@ export default {
     },
     formSubmitted(json) {
       this.playlistCreationInProgress = true;
+      this.showSnackbar = false;
 
       this.$http.post("/user/playlists", json).then(response => {
         const playlistID = response.data.id;
@@ -215,7 +239,8 @@ export default {
               return this.$http
                 .post(addToPlaylistURL, completedData.data)
                 .then(() => {
-                  alert(`Playlist of ${dateString} added to user`);
+                  this.snackbarHref = `https://open.spotify.com/playlist/${playlistID}`;
+                  this.showSnackbar = true;
                   this.playlistCreationInProgress = false;
 
                   this.formFields.date = defaultDate;
