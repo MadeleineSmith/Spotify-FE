@@ -1,6 +1,6 @@
 <template>
   <div class="hello">
-    <a :href="`${baseURL}/login`" class="btn btn-primary">Log in with Spotify</a>
+    <v-btn :href="`${baseURL}/login`">Log in with Spotify</v-btn>
   </div>
 </template>
 
