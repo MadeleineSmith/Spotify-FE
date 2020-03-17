@@ -1,6 +1,6 @@
 <template>
   <div class="hello">
-    <h1 class="white--text">Create Spotify playlist from UK charts</h1>
+    <h1 class="white--text">Create a Spotify playlist from UK charts</h1>
 
     <p class="white--text">
       Explore chart data here:
@@ -17,7 +17,7 @@
 
     <v-row justify="center">
       <v-col lg="3">
-        <v-form id="example-basic" @submit.prevent="minYearFormSubmitted()">
+        <v-form id="example-basic" @submit.prevent="yearFormSubmitted()">
           <v-card>
             <label for="yearpicker">Randomise a chart since:</label>
             <v-menu
@@ -58,7 +58,7 @@
               :disabled="playlistCreationInProgress"
               color="primary"
             >submit</v-btn>
-            <font-awesome-icon icon="spinner" spin v-show="playlistCreationInProgress"></font-awesome-icon>
+            <font-awesome-icon icon="spinner" spin v-show="showYearSpinner"></font-awesome-icon>
           </v-card>
         </v-form>
       </v-col>
@@ -103,7 +103,7 @@
               :disabled="playlistCreationInProgress"
               color="primary"
             >submit</v-btn>
-            <font-awesome-icon icon="spinner" spin v-show="playlistCreationInProgress"></font-awesome-icon>
+            <font-awesome-icon icon="spinner" spin v-show="showSpecificDateSpinner"></font-awesome-icon>
           </v-card>
         </v-form>
       </v-col>
@@ -138,7 +138,9 @@ export default {
       dateFormatted: vm.formatDate(defaultDate),
       timeout: 0,
       showSnackbar: false,
-      snackbarHref: ""
+      snackbarHref: "",
+      showSpecificDateSpinner: false,
+      showYearSpinner: false
     };
   },
   created() {
@@ -207,14 +209,8 @@ export default {
 
       return maximumNumYearsString;
     },
-    specificDateFormSubmitted() {
-      const json = {
-        date: this.formFields.date
-      };
-
-      this.formSubmitted(json);
-    },
-    minYearFormSubmitted() {
+    yearFormSubmitted() {
+      this.showYearSpinner = true;
       const minYear = parseInt(this.minYear);
 
       const json = {
@@ -222,6 +218,23 @@ export default {
       };
 
       this.formSubmitted(json);
+    },
+    specificDateFormSubmitted() {
+      this.showSpecificDateSpinner = true;
+
+      const json = {
+        date: this.formFields.date
+      };
+
+      this.formSubmitted(json);
+    },
+    resetForms() {
+      this.playlistCreationInProgress = false;
+      this.showSpecificDateSpinner = false;
+      this.showYearSpinner = false;
+
+      this.formFields.date = defaultDate;
+      this.minYear = defaultMinYear;
     },
     formSubmitted(json) {
       this.playlistCreationInProgress = true;
@@ -246,10 +259,8 @@ export default {
                 .then(() => {
                   this.snackbarHref = `https://open.spotify.com/playlist/${playlistID}`;
                   this.showSnackbar = true;
-                  this.playlistCreationInProgress = false;
 
-                  this.formFields.date = defaultDate;
-                  this.minYear = defaultMinYear;
+                  this.resetForms();
                 });
             });
         });
