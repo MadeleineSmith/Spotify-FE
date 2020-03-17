@@ -1,9 +1,9 @@
 <template>
   <div class="hello">
-    <h1 class="white--text">Create your playlist</h1>
+    <h1 class="white--text">Create Spotify playlist from UK chart data</h1>
 
     <p class="white--text">
-      Explore chart history here:
+      Explore chart data here:
       <a
         href="https://www.officialcharts.com/charts/"
         target="_blank"
@@ -11,63 +11,19 @@
     </p>
 
     <v-snackbar v-model="showSnackbar" :timeout="timeout" top="top">
-      <a :href="snackbarHref" target="_blank" @click="showSnackbar = false">Open created playlist</a>
+      <a :href="snackbarHref" target="_blank" @click="showSnackbar = false">Open playlist</a>
       <v-btn color="blue" @click="showSnackbar = false">Close</v-btn>
     </v-snackbar>
 
     <v-row justify="center">
       <v-col lg="3">
-        <v-form id="specific-date-form" @submit.prevent="specificDateFormSubmitted()">
-          <v-card>
-            <label>Create a chart on:</label>
-
-            <v-menu
-              v-model="menu"
-              :close-on-content-click="false"
-              :nudge-right="40"
-              lazy
-              transition="scale-transition"
-              offset-y
-              full-width
-              min-width="290px"
-            >
-              <template v-slot:activator="{ on }">
-                <v-text-field
-                  v-model="dateFormatted"
-                  label="Specific date"
-                  prepend-icon="event"
-                  readonly
-                  v-on="on"
-                ></v-text-field>
-              </template>
-
-              <v-date-picker
-                v-model="formFields.date"
-                @input="menu = false"
-                min="1952-11-14"
-                :max="maximumDate()"
-              ></v-date-picker>
-            </v-menu>
-
-            <v-btn
-              class="mr-4"
-              type="submit"
-              :disabled="playlistCreationInProgress"
-              color="primary"
-            >submit</v-btn>
-            <font-awesome-icon icon="spinner" spin v-show="playlistCreationInProgress"></font-awesome-icon>
-          </v-card>
-        </v-form>
-      </v-col>
-
-      <v-col lg="3">
         <v-form id="example-basic" @submit.prevent="minYearFormSubmitted()">
           <v-card>
             <label for="yearpicker">Randomise a chart since:</label>
             <v-menu
-              ref="menu2"
+              ref="yearMenu"
               :close-on-content-click="true"
-              v-model="menu2"
+              v-model="yearMenu"
               :nudge-right="40"
               lazy
               transition="scale-transition"
@@ -93,6 +49,51 @@
                 min="1952-NaN-NaN"
                 :max="maximumNumYears()"
                 no-title
+              ></v-date-picker>
+            </v-menu>
+
+            <v-btn
+              class="mr-4"
+              type="submit"
+              :disabled="playlistCreationInProgress"
+              color="primary"
+            >submit</v-btn>
+            <font-awesome-icon icon="spinner" spin v-show="playlistCreationInProgress"></font-awesome-icon>
+          </v-card>
+        </v-form>
+      </v-col>
+
+      <v-col lg="3">
+        <v-form id="specific-date-form" @submit.prevent="specificDateFormSubmitted()">
+          <v-card>
+            <label>Create a chart on:</label>
+
+            <v-menu
+              v-model="specificDateMenu"
+              :close-on-content-click="false"
+              :nudge-right="40"
+              lazy
+              transition="scale-transition"
+              offset-y
+              full-width
+              min-width="290px"
+            >
+              <template v-slot:activator="{ on }">
+                <v-text-field
+                  v-model="dateFormatted"
+                  label="Specific date"
+                  prepend-icon="event"
+                  readonly
+                  v-on="on"
+                ></v-text-field>
+              </template>
+
+              <v-date-picker
+                v-model="formFields.date"
+                @input="specificDateMenu = false"
+                ref="specificDatePicker"
+                min="1952-11-14"
+                :max="maximumDate()"
               ></v-date-picker>
             </v-menu>
 
@@ -132,9 +133,9 @@ export default {
         date: defaultDate
       },
       playlistCreationInProgress: false,
-      menu: false,
+      specificDateMenu: false,
+      yearMenu: false,
       dateFormatted: vm.formatDate(defaultDate),
-      menu2: false,
       timeout: 0,
       showSnackbar: false,
       snackbarHref: ""
@@ -157,8 +158,12 @@ export default {
       },
       deep: true
     },
-    menu2(val) {
+    yearMenu(val) {
       val && this.$nextTick(() => (this.$refs.picker.activePicker = "YEAR"));
+    },
+    specificDateMenu(val) {
+      val &&
+        setTimeout(() => (this.$refs.specificDatePicker.activePicker = "YEAR"));
     }
   },
   computed: {
