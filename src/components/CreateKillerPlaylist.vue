@@ -15,99 +15,101 @@
       <v-btn color="blue" @click="showSnackbar = false">Close</v-btn>
     </v-snackbar>
 
-    <v-row justify="center">
-      <v-col lg="3">
-        <v-form id="example-basic" @submit.prevent="yearFormSubmitted()">
-          <v-card>
-            <label for="yearpicker">Randomise a chart since:</label>
-            <v-menu
-              ref="yearMenu"
-              :close-on-content-click="true"
-              v-model="yearMenu"
-              :nudge-right="40"
-              lazy
-              transition="scale-transition"
-              offset-y
-              full-width
-              min-width="290px"
-            >
-              <template v-slot:activator="{ on }">
-                <v-text-field
+    <v-container fluid grid-list-md>
+      <v-layout row wrap justify-center="true">
+        <v-flex xs12 sm5 md3 lg3 xl2>
+          <v-form id="example-basic" @submit.prevent="yearFormSubmitted()">
+            <v-card>
+              <label for="yearpicker">Randomise a chart since:</label>
+              <v-menu
+                ref="yearMenu"
+                :close-on-content-click="true"
+                v-model="yearMenu"
+                :nudge-right="40"
+                lazy
+                transition="scale-transition"
+                offset-y
+                full-width
+                min-width="290px"
+              >
+                <template v-slot:activator="{ on }">
+                  <v-text-field
+                    v-model="minYear"
+                    label="Year"
+                    prepend-icon="event"
+                    readonly
+                    v-on="on"
+                  ></v-text-field>
+                </template>
+
+                <v-date-picker
+                  reactive
+                  show-current
+                  ref="picker"
                   v-model="minYear"
-                  label="Year"
-                  prepend-icon="event"
-                  readonly
-                  v-on="on"
-                ></v-text-field>
-              </template>
+                  min="1952-NaN-NaN"
+                  :max="maximumNumYears()"
+                  no-title
+                ></v-date-picker>
+              </v-menu>
 
-              <v-date-picker
-                reactive
-                show-current
-                ref="picker"
-                v-model="minYear"
-                min="1952-NaN-NaN"
-                :max="maximumNumYears()"
-                no-title
-              ></v-date-picker>
-            </v-menu>
+              <v-btn
+                class="mr-4"
+                type="submit"
+                :disabled="playlistCreationInProgress"
+                color="primary"
+              >submit</v-btn>
+              <font-awesome-icon icon="spinner" spin v-show="showYearSpinner"></font-awesome-icon>
+            </v-card>
+          </v-form>
+        </v-flex>
 
-            <v-btn
-              class="mr-4"
-              type="submit"
-              :disabled="playlistCreationInProgress"
-              color="primary"
-            >submit</v-btn>
-            <font-awesome-icon icon="spinner" spin v-show="showYearSpinner"></font-awesome-icon>
-          </v-card>
-        </v-form>
-      </v-col>
+        <v-flex xs12 sm5 md3 lg3 xl2>
+          <v-form id="specific-date-form" @submit.prevent="specificDateFormSubmitted()">
+            <v-card>
+              <label>Create a chart on:</label>
 
-      <v-col lg="3">
-        <v-form id="specific-date-form" @submit.prevent="specificDateFormSubmitted()">
-          <v-card>
-            <label>Create a chart on:</label>
+              <v-menu
+                v-model="specificDateMenu"
+                :close-on-content-click="false"
+                :nudge-right="40"
+                lazy
+                transition="scale-transition"
+                offset-y
+                full-width
+                min-width="290px"
+              >
+                <template v-slot:activator="{ on }">
+                  <v-text-field
+                    v-model="dateFormatted"
+                    label="Specific date"
+                    prepend-icon="event"
+                    readonly
+                    v-on="on"
+                  ></v-text-field>
+                </template>
 
-            <v-menu
-              v-model="specificDateMenu"
-              :close-on-content-click="false"
-              :nudge-right="40"
-              lazy
-              transition="scale-transition"
-              offset-y
-              full-width
-              min-width="290px"
-            >
-              <template v-slot:activator="{ on }">
-                <v-text-field
-                  v-model="dateFormatted"
-                  label="Specific date"
-                  prepend-icon="event"
-                  readonly
-                  v-on="on"
-                ></v-text-field>
-              </template>
+                <v-date-picker
+                  v-model="formFields.date"
+                  @input="specificDateMenu = false"
+                  ref="specificDatePicker"
+                  min="1952-11-14"
+                  :max="maximumDate()"
+                ></v-date-picker>
+              </v-menu>
 
-              <v-date-picker
-                v-model="formFields.date"
-                @input="specificDateMenu = false"
-                ref="specificDatePicker"
-                min="1952-11-14"
-                :max="maximumDate()"
-              ></v-date-picker>
-            </v-menu>
-
-            <v-btn
-              class="mr-4"
-              type="submit"
-              :disabled="playlistCreationInProgress"
-              color="primary"
-            >submit</v-btn>
-            <font-awesome-icon icon="spinner" spin v-show="showSpecificDateSpinner"></font-awesome-icon>
-          </v-card>
-        </v-form>
-      </v-col>
-    </v-row>
+              <v-btn
+                class="mr-4"
+                type="submit"
+                :disabled="playlistCreationInProgress"
+                color="primary"
+              >submit</v-btn>
+              <font-awesome-icon icon="spinner" spin v-show="showSpecificDateSpinner"></font-awesome-icon>
+            </v-card>
+          </v-form>
+        </v-flex>
+      </v-layout>
+    </v-container>
   </div>
 </template>
 
