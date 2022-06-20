@@ -1,6 +1,6 @@
 <template>
   <div class="hello">
-    <h1 class="white--text">Create a Spotify playlist from UK charts</h1>
+    <h1 class="white--text">Create a Spotify playlist from UK chart data</h1>
 
     <p class="white--text">
       Explore chart data here:
