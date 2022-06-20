@@ -12,7 +12,7 @@
 
     <v-snackbar v-model="showSnackbar" :timeout="timeout" top="top">
       <a :href="snackbarHref" target="_blank" @click="showSnackbar = false">Open playlist</a>
-      <v-btn color="blue" @click="showSnackbar = false">Close</v-btn>
+      <v-btn color="primary" @click="showSnackbar = false">Close</v-btn>
     </v-snackbar>
 
     <v-container fluid grid-list-md>
