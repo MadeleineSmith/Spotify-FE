@@ -1,7 +1,8 @@
 # Spotify FE
 
 #### Running locally:
-1) Run `npm run dev` to run against local environment
+1) Run `npm install` to install dependencies
+2) Run `npm run dev` to run against local environment
 
 #### Deploying to AWS:
 1) To deploy to *staging*, run `npm run release-staging`
