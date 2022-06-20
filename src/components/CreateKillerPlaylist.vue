@@ -10,9 +10,9 @@
       >Official Charts</a>
     </p>
 
-    <v-snackbar v-model="showSnackbar" :timeout="timeout" top="top">
+    <v-snackbar v-model="showSnackbar" :timeout="timeout" top="top" color="success">
       <a :href="snackbarHref" target="_blank" @click="showSnackbar = false">Open playlist</a>
-      <v-btn color="primary" @click="showSnackbar = false">Close</v-btn>
+      <v-btn color="blue" @click="showSnackbar = false">Close</v-btn>
     </v-snackbar>
 
     <v-container fluid grid-list-md>
