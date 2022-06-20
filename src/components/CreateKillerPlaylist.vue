@@ -10,7 +10,7 @@
       >Official Charts</a>
     </p>
 
-    <v-snackbar v-model="showSnackbar" :timeout="timeout" top="top" color="primary" text >
+    <v-snackbar v-model="showSnackbar" :timeout="timeout" top="top" color="white" text >
       <a :href="snackbarHref" target="_blank" @click="showSnackbar = false">Open playlist</a>
       <v-btn color="blue" @click="showSnackbar = false">Close</v-btn>
     </v-snackbar>
